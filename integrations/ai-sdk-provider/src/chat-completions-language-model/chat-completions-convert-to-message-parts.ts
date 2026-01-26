@@ -1,9 +1,9 @@
 import type { LanguageModelV2Content, LanguageModelV2StreamPart } from '@ai-sdk/provider'
-import type { FmapiChunk, FmapiContentItem, FmapiResponse, FmapiToolCall } from './fmapi-schema'
+import type { ChatCompletionsChunk, ChatCompletionsContentItem, ChatCompletionsResponse, ChatCompletionsToolCall } from './chat-completions-schema'
 import { DATABRICKS_TOOL_CALL_ID } from '../tools'
 
-export const convertFmapiChunkToMessagePart = (
-  chunk: FmapiChunk,
+export const convertChatCompletionsChunkToMessagePart = (
+  chunk: ChatCompletionsChunk,
   toolCallIdsByIndex?: Map<number, string>
 ): LanguageModelV2StreamPart[] => {
   const parts: LanguageModelV2StreamPart[] = []
@@ -49,8 +49,8 @@ export const convertFmapiChunkToMessagePart = (
   return parts
 }
 
-export const convertFmapiResponseToMessagePart = (
-  response: FmapiResponse
+export const convertChatCompletionsResponseToMessagePart = (
+  response: ChatCompletionsResponse
 ): LanguageModelV2Content[] => {
   const parts: LanguageModelV2Content[] = []
   if (response.choices.length === 0) return parts
@@ -77,7 +77,7 @@ export const convertFmapiResponseToMessagePart = (
   return parts
 }
 
-const convertToolCallToContent = (toolCall: FmapiToolCall): LanguageModelV2Content => {
+const convertToolCallToContent = (toolCall: ChatCompletionsToolCall): LanguageModelV2Content => {
   return {
     type: 'tool-call',
     toolCallId: toolCall.id,
@@ -92,7 +92,7 @@ const convertToolCallToContent = (toolCall: FmapiToolCall): LanguageModelV2Conte
 }
 
 const mapContentItemsToStreamParts = (
-  items: FmapiContentItem[],
+  items: ChatCompletionsContentItem[],
   id: string
 ): LanguageModelV2StreamPart[] => {
   const parts: LanguageModelV2StreamPart[] = []
@@ -115,7 +115,7 @@ const mapContentItemsToStreamParts = (
   return parts
 }
 
-const mapContentItemsToProviderContent = (items: FmapiContentItem[]): LanguageModelV2Content[] => {
+const mapContentItemsToProviderContent = (items: ChatCompletionsContentItem[]): LanguageModelV2Content[] => {
   const parts: LanguageModelV2Content[] = []
   for (const item of items) {
     switch (item.type) {

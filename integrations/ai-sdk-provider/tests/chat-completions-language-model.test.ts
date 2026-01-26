@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import type { LanguageModelV2StreamPart } from '@ai-sdk/provider'
-import { DatabricksFmapiLanguageModel } from '../src/fmapi-language-model/fmapi-language-model'
+import { DatabricksChatCompletionsLanguageModel } from '../src/chat-completions-language-model/chat-completions-language-model'
 import {
   FMAPI_BASIC_TEXT_OUTPUT,
   FMAPI_WITH_OPENAI_STREAMING_TOOL_CALLS,
   FMAPI_WITH_PARALLEL_STREAMING_TOOL_CALLS,
   FMAPI_RESPONSE_WITH_TOOL_CALLS,
   FMAPI_RESPONSE_WITH_PARALLEL_TOOL_CALLS,
-} from './__fixtures__/fmapi-fixtures'
+} from './__fixtures__/chat-completions-fixtures'
 import { DATABRICKS_TOOL_CALL_ID } from '../src/tools'
 
 /**
@@ -96,11 +96,11 @@ function createMockFetch(sseContent: string): typeof fetch {
   }
 }
 
-describe('DatabricksFmapiLanguageModel', () => {
+describe('DatabricksChatCompletionsLanguageModel', () => {
   it('correctly converts basic text output', async () => {
     const mockFetch = createMockFetch(FMAPI_BASIC_TEXT_OUTPUT.in)
 
-    const model = new DatabricksFmapiLanguageModel('test-model', {
+    const model = new DatabricksChatCompletionsLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -143,7 +143,7 @@ describe('DatabricksFmapiLanguageModel', () => {
   it('correctly handles OpenAI-format streaming tool calls with ID tracking', async () => {
     const mockFetch = createMockFetch(FMAPI_WITH_OPENAI_STREAMING_TOOL_CALLS.in)
 
-    const model = new DatabricksFmapiLanguageModel('test-model', {
+    const model = new DatabricksChatCompletionsLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -218,7 +218,7 @@ describe('DatabricksFmapiLanguageModel', () => {
   it('correctly handles parallel OpenAI-format streaming tool calls', async () => {
     const mockFetch = createMockFetch(FMAPI_WITH_PARALLEL_STREAMING_TOOL_CALLS.in)
 
-    const model = new DatabricksFmapiLanguageModel('test-model', {
+    const model = new DatabricksChatCompletionsLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -291,7 +291,7 @@ describe('DatabricksFmapiLanguageModel', () => {
   it('correctly reports tool-calls finish reason for streaming tool calls', async () => {
     const mockFetch = createMockFetch(FMAPI_WITH_OPENAI_STREAMING_TOOL_CALLS.in)
 
-    const model = new DatabricksFmapiLanguageModel('test-model', {
+    const model = new DatabricksChatCompletionsLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -341,7 +341,7 @@ describe('DatabricksFmapiLanguageModel', () => {
     it('correctly handles tool_calls in non-streaming response', async () => {
       const mockFetch = createMockJsonFetch(FMAPI_RESPONSE_WITH_TOOL_CALLS)
 
-      const model = new DatabricksFmapiLanguageModel('test-model', {
+      const model = new DatabricksChatCompletionsLanguageModel('test-model', {
         provider: 'databricks',
         headers: () => ({ Authorization: 'Bearer test-token' }),
         url: () => 'http://test.example.com/api',
@@ -380,7 +380,7 @@ describe('DatabricksFmapiLanguageModel', () => {
     it('correctly handles multiple parallel tool_calls in non-streaming response', async () => {
       const mockFetch = createMockJsonFetch(FMAPI_RESPONSE_WITH_PARALLEL_TOOL_CALLS)
 
-      const model = new DatabricksFmapiLanguageModel('test-model', {
+      const model = new DatabricksChatCompletionsLanguageModel('test-model', {
         provider: 'databricks',
         headers: () => ({ Authorization: 'Bearer test-token' }),
         url: () => 'http://test.example.com/api',

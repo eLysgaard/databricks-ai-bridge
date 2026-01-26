@@ -1,10 +1,10 @@
 import type { LanguageModelV2CallOptions, LanguageModelV2CallWarning } from '@ai-sdk/provider'
 
 /**
- * Response body parameters for the Databricks FMAPI (Chat Completions) API.
+ * Response body parameters for the Databricks Chat Completions API (Chat Completions) API.
  * Based on: https://docs.databricks.com/aws/en/machine-learning/foundation-model-apis/api-reference#chat-request
  */
-export type FmapiBodyArgs = {
+export type ChatCompletionsBodyArgs = {
   max_tokens?: number
   temperature?: number
   top_p?: number
@@ -21,9 +21,9 @@ export type FmapiBodyArgs = {
 }
 
 /**
- * Databricks-specific provider options for FMAPI
+ * Databricks-specific provider options for Chat Completions
  */
-export type DatabricksFmapiProviderOptions = {
+export type DatabricksChatCompletionsProviderOptions = {
   topK?: number
   n?: number
   logprobs?: boolean
@@ -32,7 +32,7 @@ export type DatabricksFmapiProviderOptions = {
 }
 
 /**
- * Converts AI SDK LanguageModelV2CallOptions to Databricks FMAPI body parameters.
+ * Converts AI SDK LanguageModelV2CallOptions to Databricks Chat Completions API body parameters.
  *
  * Inspired by the getArgs method in:
  * https://github.com/vercel/ai/blob/main/packages/openai/src/chat/openai-chat-language-model.ts#L71
@@ -40,14 +40,14 @@ export type DatabricksFmapiProviderOptions = {
  * Complies with the API described in:
  * https://docs.databricks.com/aws/en/machine-learning/foundation-model-apis/api-reference#chat-request
  */
-export function callOptionsToFmapiArgs(options: LanguageModelV2CallOptions): {
-  args: FmapiBodyArgs
+export function callOptionsToChatCompletionsArgs(options: LanguageModelV2CallOptions): {
+  args: ChatCompletionsBodyArgs
   warnings: LanguageModelV2CallWarning[]
 } {
   const warnings: LanguageModelV2CallWarning[] = []
 
   const databricksOptions = options.providerOptions?.databricks as
-    | DatabricksFmapiProviderOptions
+    | DatabricksChatCompletionsProviderOptions
     | undefined
 
   // Generate warnings for unsupported options
@@ -55,7 +55,7 @@ export function callOptionsToFmapiArgs(options: LanguageModelV2CallOptions): {
     warnings.push({
       type: 'unsupported-setting',
       setting: 'presencePenalty',
-      details: 'presencePenalty is not supported by the Databricks FMAPI',
+      details: 'presencePenalty is not supported by the Databricks Chat Completions API',
     })
   }
 
@@ -63,7 +63,7 @@ export function callOptionsToFmapiArgs(options: LanguageModelV2CallOptions): {
     warnings.push({
       type: 'unsupported-setting',
       setting: 'frequencyPenalty',
-      details: 'frequencyPenalty is not supported by the Databricks FMAPI',
+      details: 'frequencyPenalty is not supported by the Databricks Chat Completions API',
     })
   }
 
@@ -71,12 +71,12 @@ export function callOptionsToFmapiArgs(options: LanguageModelV2CallOptions): {
     warnings.push({
       type: 'unsupported-setting',
       setting: 'seed',
-      details: 'seed is not supported by the Databricks FMAPI',
+      details: 'seed is not supported by the Databricks Chat Completions API',
     })
   }
 
   // Build the args
-  const args: FmapiBodyArgs = {}
+  const args: ChatCompletionsBodyArgs = {}
 
   if (options.maxOutputTokens != null) {
     args.max_tokens = options.maxOutputTokens

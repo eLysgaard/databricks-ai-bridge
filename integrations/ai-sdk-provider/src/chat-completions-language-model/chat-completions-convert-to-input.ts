@@ -5,17 +5,17 @@ import type {
 } from '@ai-sdk/provider'
 import { parseProviderOptions } from '@ai-sdk/provider-utils'
 import { z } from 'zod/v4'
-import type { FmapiInputMessage, FmapiContentItem } from './fmapi-schema'
+import type { ChatCompletionsInputMessage, ChatCompletionsContentItem } from './chat-completions-schema'
 
 type LanguageModelV2SystemMessage = Extract<LanguageModelV2Message, { role: 'system' }>
 type LanguageModelV2UserMessage = Extract<LanguageModelV2Message, { role: 'user' }>
 type LanguageModelV2AssistantMessage = Extract<LanguageModelV2Message, { role: 'assistant' }>
 type LanguageModelV2ToolMessage = Extract<LanguageModelV2Message, { role: 'tool' }>
 
-export const convertPromptToFmapiMessages = async (
+export const convertPromptToChatCompletionsMessages = async (
   prompt: LanguageModelV2Message[]
-): Promise<{ messages: Array<FmapiInputMessage> }> => {
-  const messages: Array<FmapiInputMessage> = []
+): Promise<{ messages: Array<ChatCompletionsInputMessage> }> => {
+  const messages: Array<ChatCompletionsInputMessage> = []
 
   for (const message of prompt) {
     switch (message.role) {
@@ -38,15 +38,15 @@ export const convertPromptToFmapiMessages = async (
   return { messages }
 }
 
-const convertSystemMessage = (message: LanguageModelV2SystemMessage): FmapiInputMessage => {
+const convertSystemMessage = (message: LanguageModelV2SystemMessage): ChatCompletionsInputMessage => {
   return {
     role: 'system',
     content: [{ type: 'text', text: message.content }],
   }
 }
 
-const convertUserMessage = (message: LanguageModelV2UserMessage): FmapiInputMessage => {
-  const content: FmapiContentItem[] = []
+const convertUserMessage = (message: LanguageModelV2UserMessage): ChatCompletionsInputMessage => {
+  const content: ChatCompletionsContentItem[] = []
 
   for (const part of message.content) {
     switch (part.type) {
@@ -67,8 +67,8 @@ const convertUserMessage = (message: LanguageModelV2UserMessage): FmapiInputMess
 
 const convertAssistantMessage = async (
   message: LanguageModelV2AssistantMessage
-): Promise<FmapiInputMessage> => {
-  const contentItems: FmapiContentItem[] = []
+): Promise<ChatCompletionsInputMessage> => {
+  const contentItems: ChatCompletionsContentItem[] = []
   const toolCalls: Array<{
     id: string
     type: 'function'
@@ -117,8 +117,8 @@ const convertAssistantMessage = async (
   }
 }
 
-const convertToolMessages = (message: LanguageModelV2ToolMessage): FmapiInputMessage[] => {
-  const messages: FmapiInputMessage[] = []
+const convertToolMessages = (message: LanguageModelV2ToolMessage): ChatCompletionsInputMessage[] => {
+  const messages: ChatCompletionsInputMessage[] = []
 
   for (const part of message.content) {
     if (part.type === 'tool-result') {

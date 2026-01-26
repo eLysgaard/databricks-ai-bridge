@@ -2,7 +2,7 @@ import type { LanguageModelV2, ProviderV2 } from '@ai-sdk/provider'
 import { combineHeaders, type FetchFunction, withoutTrailingSlash } from '@ai-sdk/provider-utils'
 import { DatabricksChatAgentLanguageModel } from './chat-agent-language-model/chat-agent-language-model'
 import { DatabricksResponsesAgentLanguageModel } from './responses-agent-language-model/responses-agent-language-model'
-import { DatabricksFmapiLanguageModel } from './fmapi-language-model/fmapi-language-model'
+import { DatabricksChatCompletionsLanguageModel } from './chat-completions-language-model/chat-completions-language-model'
 
 export type DatabricksLanguageModelConfig = {
   provider: string
@@ -67,8 +67,8 @@ export const createDatabricksProvider = (
       provider,
     })
 
-  const createFmapi = (modelId: string): LanguageModelV2 =>
-    new DatabricksFmapiLanguageModel(modelId, {
+  const createChatCompletions = (modelId: string): LanguageModelV2 =>
+    new DatabricksChatCompletionsLanguageModel(modelId, {
       url: formatUrl,
       headers: getHeaders,
       fetch,
@@ -83,7 +83,7 @@ export const createDatabricksProvider = (
 
   return {
     responses: createResponsesAgent,
-    chatCompletions: createFmapi,
+    chatCompletions: createChatCompletions,
     chatAgent: createChatAgent,
     imageModel: notImplemented('ImageModel'),
     textEmbeddingModel: notImplemented('TextEmbeddingModel'),

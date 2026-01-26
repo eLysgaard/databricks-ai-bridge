@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { LanguageModelV2CallOptions, LanguageModelV2Prompt } from '@ai-sdk/provider'
-import { callOptionsToFmapiArgs } from '../src/fmapi-language-model/call-options-to-fmapi-args'
+import { callOptionsToChatCompletionsArgs } from '../src/chat-completions-language-model/call-options-to-chat-completions-args'
 
 const defaultPrompt: LanguageModelV2Prompt = [{ role: 'user', content: [{ type: 'text', text: 'test' }] }]
 const createOptions = (overrides: Partial<LanguageModelV2CallOptions> = {}): LanguageModelV2CallOptions => ({
@@ -8,9 +8,9 @@ const createOptions = (overrides: Partial<LanguageModelV2CallOptions> = {}): Lan
   ...overrides,
 })
 
-describe('callOptionsToFmapiArgs', () => {
+describe('callOptionsToChatCompletionsArgs', () => {
   it('should convert supported options', () => {
-    const { args } = callOptionsToFmapiArgs(createOptions({
+    const { args } = callOptionsToChatCompletionsArgs(createOptions({
       maxOutputTokens: 1024,
       temperature: 0.7,
       topP: 0.9,
@@ -26,14 +26,14 @@ describe('callOptionsToFmapiArgs', () => {
   })
 
   it('should handle response formats', () => {
-    expect(callOptionsToFmapiArgs(createOptions({ responseFormat: { type: 'text' } })).args.response_format)
+    expect(callOptionsToChatCompletionsArgs(createOptions({ responseFormat: { type: 'text' } })).args.response_format)
       .toEqual({ type: 'text' })
 
-    expect(callOptionsToFmapiArgs(createOptions({ responseFormat: { type: 'json' } })).args.response_format)
+    expect(callOptionsToChatCompletionsArgs(createOptions({ responseFormat: { type: 'json' } })).args.response_format)
       .toEqual({ type: 'json_object' })
 
     const schema = { type: 'object' as const }
-    const { args } = callOptionsToFmapiArgs(createOptions({
+    const { args } = callOptionsToChatCompletionsArgs(createOptions({
       responseFormat: { type: 'json', name: 'test', schema },
     }))
     expect(args.response_format).toMatchObject({
@@ -43,7 +43,7 @@ describe('callOptionsToFmapiArgs', () => {
   })
 
   it('should convert databricks provider options', () => {
-    const { args } = callOptionsToFmapiArgs(createOptions({
+    const { args } = callOptionsToChatCompletionsArgs(createOptions({
       providerOptions: {
         databricks: {
           topK: 50,
@@ -63,7 +63,7 @@ describe('callOptionsToFmapiArgs', () => {
   })
 
   it('should warn for unsupported options', () => {
-    const { warnings } = callOptionsToFmapiArgs(createOptions({
+    const { warnings } = callOptionsToChatCompletionsArgs(createOptions({
       presencePenalty: 0.5,
       frequencyPenalty: 0.3,
       seed: 42,

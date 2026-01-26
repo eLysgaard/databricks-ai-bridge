@@ -10,7 +10,7 @@ export const toolCallSchema = z.object({
   }),
 })
 
-// Zod schemas mirroring FMAPI chat chunk types
+// Zod schemas mirroring chat completions chunk types
 export const reasoningSummarySchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('summary_text'),
@@ -52,7 +52,7 @@ export const toolCallDeltaSchema = z.object({
     .optional(),
 })
 
-export const fmapiChunkSchema = z.object({
+export const chatCompletionsChunkSchema = z.object({
   id: z.string(),
   created: z.number(),
   model: z.string(),
@@ -79,7 +79,7 @@ export const fmapiChunkSchema = z.object({
   ),
 })
 
-export const fmapiResponseSchema = z.object({
+export const chatCompletionsResponseSchema = z.object({
   id: z.string(),
   created: z.number(),
   model: z.string(),
@@ -105,7 +105,7 @@ export const fmapiResponseSchema = z.object({
 
 // Input message schema for requests (different from response format)
 // Tool messages in requests need tool_call_id at the message level
-export type FmapiInputMessage =
+export type ChatCompletionsInputMessage =
   | {
       role: 'system' | 'user' | 'assistant'
       content: string | z.infer<typeof contentItemSchema>[] | null
@@ -118,8 +118,8 @@ export type FmapiInputMessage =
     }
 
 // Exported types for type-only imports in other modules
-export type FmapiChunk = z.infer<typeof fmapiChunkSchema>
-export type FmapiResponse = z.infer<typeof fmapiResponseSchema>
-export type FmapiMessage = FmapiResponse['choices'][number]['message']
-export type FmapiContentItem = z.infer<typeof contentItemSchema>
-export type FmapiToolCall = z.infer<typeof toolCallSchema>
+export type ChatCompletionsChunk = z.infer<typeof chatCompletionsChunkSchema>
+export type ChatCompletionsResponse = z.infer<typeof chatCompletionsResponseSchema>
+export type ChatCompletionsMessage = ChatCompletionsResponse['choices'][number]['message']
+export type ChatCompletionsContentItem = z.infer<typeof contentItemSchema>
+export type ChatCompletionsToolCall = z.infer<typeof toolCallSchema>

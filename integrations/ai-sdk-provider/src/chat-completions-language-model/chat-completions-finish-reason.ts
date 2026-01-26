@@ -1,6 +1,6 @@
 import { LanguageModelV2FinishReason } from '@ai-sdk/provider'
 
-export function mapFmapiFinishReason(
+export function mapChatCompletionsFinishReason(
   finishReason: string | null | undefined
 ): LanguageModelV2FinishReason {
   switch (finishReason) {

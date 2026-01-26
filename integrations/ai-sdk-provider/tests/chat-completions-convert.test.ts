@@ -1,18 +1,18 @@
 import { describe, it, expect } from 'vitest'
 import type { LanguageModelV2Message } from '@ai-sdk/provider'
-import { convertPromptToFmapiMessages } from '../src/fmapi-language-model/fmapi-convert-to-input'
+import { convertPromptToChatCompletionsMessages } from '../src/chat-completions-language-model/chat-completions-convert-to-input'
 import {
-  convertFmapiChunkToMessagePart,
-  convertFmapiResponseToMessagePart,
-} from '../src/fmapi-language-model/fmapi-convert-to-message-parts'
-import type { FmapiChunk, FmapiResponse } from '../src/fmapi-language-model/fmapi-schema'
+  convertChatCompletionsChunkToMessagePart,
+  convertChatCompletionsResponseToMessagePart,
+} from '../src/chat-completions-language-model/chat-completions-convert-to-message-parts'
+import type { ChatCompletionsChunk, ChatCompletionsResponse } from '../src/chat-completions-language-model/chat-completions-schema'
 import { DATABRICKS_TOOL_CALL_ID } from '../src/tools'
 
 // ============================================================================
-// Tests for convertPromptToFmapiMessages (fmapi-convert-to-input.ts)
+// Tests for convertPromptToChatCompletionsMessages (chat-completions-convert-to-input.ts)
 // ============================================================================
 
-describe('convertPromptToFmapiMessages', () => {
+describe('convertPromptToChatCompletionsMessages', () => {
   describe('system messages', () => {
     it('should keep system message role with text content', async () => {
       const prompt: LanguageModelV2Message[] = [
@@ -22,7 +22,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].role).toBe('system')
@@ -39,7 +39,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].role).toBe('system')
@@ -56,7 +56,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].role).toBe('user')
@@ -74,7 +74,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].content).toEqual([
@@ -97,7 +97,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].content).toEqual([
@@ -119,7 +119,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].content).toEqual([
@@ -141,7 +141,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].content).toEqual([
@@ -163,7 +163,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       // Base64 data doesn't start with http:// or https://, so it should be skipped
@@ -184,7 +184,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].content).toEqual([])
@@ -204,7 +204,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].content).toEqual([])
@@ -218,7 +218,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].content).toEqual([])
@@ -239,7 +239,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].content).toEqual([
@@ -258,7 +258,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].role).toBe('assistant')
@@ -280,7 +280,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].role).toBe('assistant')
@@ -312,7 +312,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].role).toBe('assistant')
@@ -351,7 +351,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       const message = result.messages[0] as {
@@ -381,7 +381,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].content).toEqual([
@@ -397,7 +397,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].content).toBeNull()
@@ -423,7 +423,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       const message = result.messages[0] as {
@@ -460,7 +460,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       expect(result.messages[0].role).toBe('tool')
@@ -496,7 +496,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       // Each tool result becomes a separate message
       expect(result.messages).toHaveLength(2)
@@ -526,7 +526,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       const message = result.messages[0] as { role: string; tool_call_id: string; content: string }
@@ -551,7 +551,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       const message = result.messages[0] as { role: string; tool_call_id: string; content: string }
@@ -576,7 +576,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(1)
       const message = result.messages[0] as { role: string; tool_call_id: string; content: string }
@@ -593,7 +593,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       // Empty tool message results in no messages
       expect(result.messages).toHaveLength(0)
@@ -644,7 +644,7 @@ describe('convertPromptToFmapiMessages', () => {
         },
       ]
 
-      const result = await convertPromptToFmapiMessages(prompt)
+      const result = await convertPromptToChatCompletionsMessages(prompt)
 
       expect(result.messages).toHaveLength(5)
       expect(result.messages[0].role).toBe('system') // system stays as system
@@ -657,11 +657,11 @@ describe('convertPromptToFmapiMessages', () => {
 })
 
 // ============================================================================
-// Tests for convertFmapiChunkToMessagePart (fmapi-convert-to-message-parts.ts)
+// Tests for convertChatCompletionsChunkToMessagePart (chat-completions-convert-to-message-parts.ts)
 // ============================================================================
 
-describe('convertFmapiChunkToMessagePart', () => {
-  const createChunk = (content: string | FmapiChunk['choices'][0]['delta']['content']): FmapiChunk => ({
+describe('convertChatCompletionsChunkToMessagePart', () => {
+  const createChunk = (content: string | ChatCompletionsChunk['choices'][0]['delta']['content']): ChatCompletionsChunk => ({
     id: 'chunk-123',
     created: Date.now(),
     model: 'test-model',
@@ -678,9 +678,9 @@ describe('convertFmapiChunkToMessagePart', () => {
   })
 
   const createToolCallChunk = (
-    toolCalls: FmapiChunk['choices'][0]['delta']['tool_calls'],
+    toolCalls: ChatCompletionsChunk['choices'][0]['delta']['tool_calls'],
     content?: string | null
-  ): FmapiChunk => ({
+  ): ChatCompletionsChunk => ({
     id: 'chunk-tool',
     created: Date.now(),
     model: 'test-model',
@@ -701,7 +701,7 @@ describe('convertFmapiChunkToMessagePart', () => {
     it('should convert plain text to text-delta', () => {
       const chunk = createChunk('Hello, world!')
 
-      const result = convertFmapiChunkToMessagePart(chunk)
+      const result = convertChatCompletionsChunkToMessagePart(chunk)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toEqual({
@@ -714,7 +714,7 @@ describe('convertFmapiChunkToMessagePart', () => {
     it('should return empty array for empty string content', () => {
       const chunk = createChunk('')
 
-      const result = convertFmapiChunkToMessagePart(chunk)
+      const result = convertChatCompletionsChunkToMessagePart(chunk)
 
       // Empty string content is skipped to avoid spurious text-start/text-end cycles
       expect(result).toHaveLength(0)
@@ -727,7 +727,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         { type: 'text' as const, text: 'Hello from array!' },
       ])
 
-      const result = convertFmapiChunkToMessagePart(chunk)
+      const result = convertChatCompletionsChunkToMessagePart(chunk)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toEqual({
@@ -743,7 +743,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         { type: 'text' as const, text: 'Second' },
       ])
 
-      const result = convertFmapiChunkToMessagePart(chunk)
+      const result = convertChatCompletionsChunkToMessagePart(chunk)
 
       expect(result).toHaveLength(2)
       expect(result[0]).toMatchObject({ type: 'text-delta', delta: 'First ' })
@@ -760,7 +760,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         },
       ])
 
-      const result = convertFmapiChunkToMessagePart(chunk)
+      const result = convertChatCompletionsChunkToMessagePart(chunk)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toEqual({
@@ -781,7 +781,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         },
       ])
 
-      const result = convertFmapiChunkToMessagePart(chunk)
+      const result = convertChatCompletionsChunkToMessagePart(chunk)
 
       expect(result).toHaveLength(2)
       expect(result[0]).toMatchObject({ type: 'reasoning-delta', delta: 'Step 1' })
@@ -798,7 +798,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         },
       ])
 
-      const result = convertFmapiChunkToMessagePart(chunk)
+      const result = convertChatCompletionsChunkToMessagePart(chunk)
 
       expect(result).toHaveLength(0)
     })
@@ -808,7 +808,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         { type: 'image' as const, image_url: 'https://example.com/image.png' },
       ])
 
-      const result = convertFmapiChunkToMessagePart(chunk)
+      const result = convertChatCompletionsChunkToMessagePart(chunk)
 
       expect(result).toHaveLength(0)
     })
@@ -823,7 +823,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         { type: 'image' as const, image_url: 'https://example.com/img.png' },
       ])
 
-      const result = convertFmapiChunkToMessagePart(chunk)
+      const result = convertChatCompletionsChunkToMessagePart(chunk)
 
       expect(result).toHaveLength(2)
       expect(result[0].type).toBe('text-delta')
@@ -833,7 +833,7 @@ describe('convertFmapiChunkToMessagePart', () => {
 
   describe('empty choices array', () => {
     it('should return empty array when choices is empty', () => {
-      const chunk: FmapiChunk = {
+      const chunk: ChatCompletionsChunk = {
         id: 'chunk-empty',
         created: Date.now(),
         model: 'test-model',
@@ -841,7 +841,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         choices: [],
       }
 
-      const result = convertFmapiChunkToMessagePart(chunk)
+      const result = convertChatCompletionsChunkToMessagePart(chunk)
 
       expect(result).toHaveLength(0)
     })
@@ -862,7 +862,7 @@ describe('convertFmapiChunkToMessagePart', () => {
       ])
 
       const toolCallIdsByIndex = new Map<number, string>()
-      const result = convertFmapiChunkToMessagePart(chunk, toolCallIdsByIndex)
+      const result = convertChatCompletionsChunkToMessagePart(chunk, toolCallIdsByIndex)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toMatchObject({
@@ -888,7 +888,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         },
       ])
 
-      const result = convertFmapiChunkToMessagePart(chunk, toolCallIdsByIndex)
+      const result = convertChatCompletionsChunkToMessagePart(chunk, toolCallIdsByIndex)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toMatchObject({
@@ -912,7 +912,7 @@ describe('convertFmapiChunkToMessagePart', () => {
       ])
 
       const toolCallIdsByIndex = new Map<number, string>()
-      const result = convertFmapiChunkToMessagePart(chunk, toolCallIdsByIndex)
+      const result = convertChatCompletionsChunkToMessagePart(chunk, toolCallIdsByIndex)
 
       expect(result).toHaveLength(2)
       expect(result[0]).toMatchObject({
@@ -950,7 +950,7 @@ describe('convertFmapiChunkToMessagePart', () => {
       ])
 
       const toolCallIdsByIndex = new Map<number, string>()
-      const result = convertFmapiChunkToMessagePart(chunk, toolCallIdsByIndex)
+      const result = convertChatCompletionsChunkToMessagePart(chunk, toolCallIdsByIndex)
 
       expect(result).toHaveLength(4) // 2 starts + 2 deltas
       expect(result[0]).toMatchObject({ type: 'tool-input-start', id: 'call-a', toolName: 'tool_a' })
@@ -969,11 +969,11 @@ describe('convertFmapiChunkToMessagePart', () => {
         { index: 0, id: 'call-x', type: 'function', function: { name: 'tool_x', arguments: '' } },
         { index: 1, id: 'call-y', type: 'function', function: { name: 'tool_y', arguments: '' } },
       ])
-      convertFmapiChunkToMessagePart(chunk1, toolCallIdsByIndex)
+      convertChatCompletionsChunkToMessagePart(chunk1, toolCallIdsByIndex)
 
       // Second chunk: arguments for tool at index 0 (no id)
       const chunk2 = createToolCallChunk([{ index: 0, function: { arguments: '{"x":' } }])
-      const result2 = convertFmapiChunkToMessagePart(chunk2, toolCallIdsByIndex)
+      const result2 = convertChatCompletionsChunkToMessagePart(chunk2, toolCallIdsByIndex)
 
       expect(result2).toHaveLength(1)
       expect(result2[0]).toMatchObject({
@@ -984,7 +984,7 @@ describe('convertFmapiChunkToMessagePart', () => {
 
       // Third chunk: arguments for tool at index 1 (no id)
       const chunk3 = createToolCallChunk([{ index: 1, function: { arguments: '{"y":' } }])
-      const result3 = convertFmapiChunkToMessagePart(chunk3, toolCallIdsByIndex)
+      const result3 = convertChatCompletionsChunkToMessagePart(chunk3, toolCallIdsByIndex)
 
       expect(result3).toHaveLength(1)
       expect(result3[0]).toMatchObject({
@@ -1005,7 +1005,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         },
       ])
 
-      const result = convertFmapiChunkToMessagePart(chunk) // No map provided
+      const result = convertChatCompletionsChunkToMessagePart(chunk) // No map provided
 
       expect(result).toHaveLength(1)
       expect(result[0]).toMatchObject({
@@ -1028,7 +1028,7 @@ describe('convertFmapiChunkToMessagePart', () => {
         },
       ])
 
-      const result = convertFmapiChunkToMessagePart(chunk, toolCallIdsByIndex)
+      const result = convertChatCompletionsChunkToMessagePart(chunk, toolCallIdsByIndex)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toMatchObject({
@@ -1041,11 +1041,11 @@ describe('convertFmapiChunkToMessagePart', () => {
 })
 
 // ============================================================================
-// Tests for convertFmapiResponseToMessagePart (fmapi-convert-to-message-parts.ts)
+// Tests for convertChatCompletionsResponseToMessagePart (chat-completions-convert-to-message-parts.ts)
 // ============================================================================
 
-describe('convertFmapiResponseToMessagePart', () => {
-  const createResponse = (content: string | FmapiResponse['choices'][0]['message']['content']): FmapiResponse => ({
+describe('convertChatCompletionsResponseToMessagePart', () => {
+  const createResponse = (content: string | ChatCompletionsResponse['choices'][0]['message']['content']): ChatCompletionsResponse => ({
     id: 'resp-123',
     created: Date.now(),
     model: 'test-model',
@@ -1063,7 +1063,7 @@ describe('convertFmapiResponseToMessagePart', () => {
     it('should convert plain text string content', () => {
       const response = createResponse('Hello, this is the complete response.')
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toEqual({
@@ -1075,7 +1075,7 @@ describe('convertFmapiResponseToMessagePart', () => {
     it('should handle empty string content', () => {
       const response = createResponse('')
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toEqual({ type: 'text', text: '' })
@@ -1088,7 +1088,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         { type: 'text' as const, text: 'Response in array format' },
       ])
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toEqual({
@@ -1103,7 +1103,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         { type: 'text' as const, text: 'Part 2' },
       ])
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(2)
       expect(result[0]).toEqual({ type: 'text', text: 'Part 1' })
@@ -1120,7 +1120,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         },
       ])
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toEqual({
@@ -1140,7 +1140,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         },
       ])
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(2)
       expect(result[0]).toEqual({ type: 'reasoning', text: 'Reasoning 1' })
@@ -1157,7 +1157,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         },
       ])
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(0)
     })
@@ -1167,7 +1167,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         { type: 'image' as const, image_url: 'https://example.com/result.png' },
       ])
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(0)
     })
@@ -1182,7 +1182,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         { type: 'image' as const, image_url: 'https://example.com/chart.png' },
       ])
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(2)
       expect(result[0]).toEqual({ type: 'text', text: 'Final answer' })
@@ -1190,7 +1190,7 @@ describe('convertFmapiResponseToMessagePart', () => {
     })
 
     it('should handle undefined content', () => {
-      const response: FmapiResponse = {
+      const response: ChatCompletionsResponse = {
         id: 'resp-undef',
         created: Date.now(),
         model: 'test-model',
@@ -1204,7 +1204,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         ],
       }
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(0)
     })
@@ -1212,7 +1212,7 @@ describe('convertFmapiResponseToMessagePart', () => {
 
   describe('OpenAI-format tool_calls', () => {
     it('should convert single tool_call to tool-call content', () => {
-      const response: FmapiResponse = {
+      const response: ChatCompletionsResponse = {
         id: 'resp-tool',
         created: Date.now(),
         model: 'test-model',
@@ -1236,7 +1236,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         ],
       }
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toMatchObject({
@@ -1253,7 +1253,7 @@ describe('convertFmapiResponseToMessagePart', () => {
     })
 
     it('should convert multiple tool_calls', () => {
-      const response: FmapiResponse = {
+      const response: ChatCompletionsResponse = {
         id: 'resp-multi-tool',
         created: Date.now(),
         model: 'test-model',
@@ -1285,7 +1285,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         ],
       }
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(2)
       expect(result[0]).toMatchObject({
@@ -1313,7 +1313,7 @@ describe('convertFmapiResponseToMessagePart', () => {
     })
 
     it('should include text content alongside tool_calls', () => {
-      const response: FmapiResponse = {
+      const response: ChatCompletionsResponse = {
         id: 'resp-tool-text',
         created: Date.now(),
         model: 'test-model',
@@ -1337,7 +1337,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         ],
       }
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(2)
       expect(result[0]).toMatchObject({
@@ -1357,7 +1357,7 @@ describe('convertFmapiResponseToMessagePart', () => {
     })
 
     it('should handle tool_calls with complex JSON arguments', () => {
-      const response: FmapiResponse = {
+      const response: ChatCompletionsResponse = {
         id: 'resp-complex',
         created: Date.now(),
         model: 'test-model',
@@ -1381,7 +1381,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         ],
       }
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toMatchObject({
@@ -1398,7 +1398,7 @@ describe('convertFmapiResponseToMessagePart', () => {
     })
 
     it('should handle empty tool_calls array by falling back to content', () => {
-      const response: FmapiResponse = {
+      const response: ChatCompletionsResponse = {
         id: 'resp-empty-tools',
         created: Date.now(),
         model: 'test-model',
@@ -1413,7 +1413,7 @@ describe('convertFmapiResponseToMessagePart', () => {
         ],
       }
 
-      const result = convertFmapiResponseToMessagePart(response)
+      const result = convertChatCompletionsResponseToMessagePart(response)
 
       expect(result).toHaveLength(1)
       expect(result[0]).toMatchObject({

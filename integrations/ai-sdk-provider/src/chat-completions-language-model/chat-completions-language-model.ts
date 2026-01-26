@@ -16,18 +16,18 @@ import {
 } from '@ai-sdk/provider-utils'
 import { z } from 'zod/v4'
 import type { DatabricksLanguageModelConfig } from '../databricks-provider'
-import { fmapiChunkSchema, fmapiResponseSchema } from './fmapi-schema'
+import { chatCompletionsChunkSchema, chatCompletionsResponseSchema } from './chat-completions-schema'
 import {
-  convertFmapiChunkToMessagePart,
-  convertFmapiResponseToMessagePart,
-} from './fmapi-convert-to-message-parts'
-import { convertPromptToFmapiMessages } from './fmapi-convert-to-input'
+  convertChatCompletionsChunkToMessagePart,
+  convertChatCompletionsResponseToMessagePart,
+} from './chat-completions-convert-to-message-parts'
+import { convertPromptToChatCompletionsMessages } from './chat-completions-convert-to-input'
 import { getDatabricksLanguageModelTransformStream } from '../stream-transformers/databricks-stream-transformer'
 import { DATABRICKS_TOOL_CALL_ID } from '../tools'
-import { mapFmapiFinishReason } from './fmapi-finish-reason'
-import { callOptionsToFmapiArgs } from './call-options-to-fmapi-args'
+import { mapChatCompletionsFinishReason } from './chat-completions-finish-reason'
+import { callOptionsToChatCompletionsArgs } from './call-options-to-chat-completions-args'
 
-export class DatabricksFmapiLanguageModel implements LanguageModelV2 {
+export class DatabricksChatCompletionsLanguageModel implements LanguageModelV2 {
   readonly specificationVersion = 'v2'
 
   readonly modelId: string
@@ -57,7 +57,7 @@ export class DatabricksFmapiLanguageModel implements LanguageModelV2 {
 
     const { value: response } = await postJsonToApi({
       ...networkArgs,
-      successfulResponseHandler: createJsonResponseHandler(fmapiResponseSchema),
+      successfulResponseHandler: createJsonResponseHandler(chatCompletionsResponseSchema),
       failedResponseHandler: createJsonErrorResponseHandler({
         errorSchema: z.any(),
         errorToMessage: (error) => JSON.stringify(error),
@@ -67,10 +67,10 @@ export class DatabricksFmapiLanguageModel implements LanguageModelV2 {
 
     // Determine finish reason from response
     const choice = response.choices[0]
-    const finishReason = mapFmapiFinishReason(choice?.finish_reason)
+    const finishReason = mapChatCompletionsFinishReason(choice?.finish_reason)
 
     return {
-      content: convertFmapiResponseToMessagePart(response),
+      content: convertChatCompletionsResponseToMessagePart(response),
       finishReason,
       usage: {
         inputTokens: response.usage?.prompt_tokens ?? 0,
@@ -98,7 +98,7 @@ export class DatabricksFmapiLanguageModel implements LanguageModelV2 {
         errorToMessage: (error) => JSON.stringify(error),
         isRetryable: () => false,
       }),
-      successfulResponseHandler: createEventSourceResponseHandler(fmapiChunkSchema),
+      successfulResponseHandler: createEventSourceResponseHandler(chatCompletionsChunkSchema),
       abortSignal: options.abortSignal,
     })
 
@@ -116,7 +116,7 @@ export class DatabricksFmapiLanguageModel implements LanguageModelV2 {
       stream: response
         .pipeThrough(
           new TransformStream<
-            ParseResult<z.infer<typeof fmapiChunkSchema>>,
+            ParseResult<z.infer<typeof chatCompletionsChunkSchema>>,
             LanguageModelV2StreamPart
           >({
             start(controller) {
@@ -137,7 +137,7 @@ export class DatabricksFmapiLanguageModel implements LanguageModelV2 {
 
               // Track finish reason from chunk
               const choice = chunk.value.choices[0]
-              finishReason = mapFmapiFinishReason(choice?.finish_reason)
+              finishReason = mapChatCompletionsFinishReason(choice?.finish_reason)
 
               // Track usage from chunk
               if (chunk.value.usage) {
@@ -148,7 +148,7 @@ export class DatabricksFmapiLanguageModel implements LanguageModelV2 {
                 }
               }
 
-              const parts = convertFmapiChunkToMessagePart(chunk.value, toolCallIdsByIndex)
+              const parts = convertChatCompletionsChunkToMessagePart(chunk.value, toolCallIdsByIndex)
               for (const part of parts) {
                 // Track tool call info for later emission
                 if (part.type === 'tool-input-start') {
@@ -221,10 +221,10 @@ export class DatabricksFmapiLanguageModel implements LanguageModelV2 {
       ? convertToolChoiceToOpenAIFormat(options.toolChoice)
       : undefined
 
-    const { messages } = await convertPromptToFmapiMessages(options.prompt)
+    const { messages } = await convertPromptToChatCompletionsMessages(options.prompt)
 
     // Convert call options to FMAPI args
-    const { args: callArgs, warnings } = callOptionsToFmapiArgs(options)
+    const { args: callArgs, warnings } = callOptionsToChatCompletionsArgs(options)
 
     return {
       url: config.url({
