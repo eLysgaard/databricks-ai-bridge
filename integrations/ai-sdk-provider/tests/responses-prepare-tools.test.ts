@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { LanguageModelV2FunctionTool, LanguageModelV2ToolChoice } from '@ai-sdk/provider'
-import { prepareResponsesTools } from '../src/responses-agent-language-model/responses-prepare-tools'
+import { prepareResponsesTools } from '../src/responses-language-model/responses-prepare-tools'
 import { DATABRICKS_TOOL_CALL_ID } from '../src/tools'
 
 describe('prepareResponsesTools', () => {

@@ -6,7 +6,7 @@ import {
   type DatabricksProviderSettings,
 } from '../src/databricks-provider'
 import { DatabricksChatAgentLanguageModel } from '../src/chat-agent-language-model/chat-agent-language-model'
-import { DatabricksResponsesAgentLanguageModel } from '../src/responses-agent-language-model/responses-agent-language-model'
+import { DatabricksResponsesLanguageModel } from '../src/responses-language-model/responses-language-model'
 import { DatabricksChatCompletionsLanguageModel } from '../src/chat-completions-language-model/chat-completions-language-model'
 
 describe('createDatabricksProvider', () => {
@@ -83,10 +83,10 @@ describe('createDatabricksProvider', () => {
       expect(model.specificationVersion).toBe('v2')
     })
 
-    it('responses method exists and returns DatabricksResponsesAgentLanguageModel', () => {
+    it('responses method exists and returns DatabricksResponsesLanguageModel', () => {
       const model = provider.responses('test-model')
 
-      expect(model).toBeInstanceOf(DatabricksResponsesAgentLanguageModel)
+      expect(model).toBeInstanceOf(DatabricksResponsesLanguageModel)
       expect(model.modelId).toBe('test-model')
       expect(model.specificationVersion).toBe('v2')
     })
@@ -481,7 +481,7 @@ describe('createDatabricksProvider', () => {
       const chatCompletionsModel = provider.chatCompletions('chat-completions-model')
 
       expect(chatModel).toBeInstanceOf(DatabricksChatAgentLanguageModel)
-      expect(responsesModel).toBeInstanceOf(DatabricksResponsesAgentLanguageModel)
+      expect(responsesModel).toBeInstanceOf(DatabricksResponsesLanguageModel)
       expect(chatCompletionsModel).toBeInstanceOf(DatabricksChatCompletionsLanguageModel)
 
       // Each instance should be unique

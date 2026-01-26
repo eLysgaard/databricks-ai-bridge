@@ -3,7 +3,7 @@ import { z } from 'zod/v4'
 /**
  * Response schema
  */
-const responsesAgentMessageSchema = z.object({
+const responsesMessageSchema = z.object({
   type: z.literal('message'),
   role: z.literal('assistant'),
   id: z.string(),
@@ -27,7 +27,7 @@ const responsesAgentMessageSchema = z.object({
   ),
 })
 
-const responsesAgentFunctionCallSchema = z.object({
+const responsesFunctionCallSchema = z.object({
   type: z.literal('function_call'),
   call_id: z.string(),
   name: z.string(),
@@ -35,7 +35,7 @@ const responsesAgentFunctionCallSchema = z.object({
   id: z.string(),
 })
 
-const responsesAgentReasoningSchema = z.object({
+const responsesReasoningSchema = z.object({
   type: z.literal('reasoning'),
   id: z.string(),
   encrypted_content: z.string().nullish(),
@@ -47,13 +47,13 @@ const responsesAgentReasoningSchema = z.object({
   ),
 })
 
-const responsesAgentFunctionCallOutputSchema = z.object({
+const responsesFunctionCallOutputSchema = z.object({
   type: z.literal('function_call_output'),
   call_id: z.string(),
   output: z.any(),
 })
 
-const responsesAgentMcpApprovalRequestSchema = z.object({
+const responsesMcpApprovalRequestSchema = z.object({
   type: z.literal('mcp_approval_request'),
   id: z.string(),
   name: z.string(),
@@ -61,7 +61,7 @@ const responsesAgentMcpApprovalRequestSchema = z.object({
   server_label: z.string(),
 })
 
-const responsesAgentMcpApprovalResponseSchema = z.object({
+const responsesMcpApprovalResponseSchema = z.object({
   type: z.literal('mcp_approval_response'),
   id: z.string().optional(),
   approval_request_id: z.string(),
@@ -69,16 +69,16 @@ const responsesAgentMcpApprovalResponseSchema = z.object({
   reason: z.string().nullish(),
 })
 
-const responsesAgentOutputItem = z.discriminatedUnion('type', [
-  responsesAgentMessageSchema,
-  responsesAgentFunctionCallSchema,
-  responsesAgentReasoningSchema,
-  responsesAgentFunctionCallOutputSchema,
-  responsesAgentMcpApprovalRequestSchema,
-  responsesAgentMcpApprovalResponseSchema,
+const responsesOutputItem = z.discriminatedUnion('type', [
+  responsesMessageSchema,
+  responsesFunctionCallSchema,
+  responsesReasoningSchema,
+  responsesFunctionCallOutputSchema,
+  responsesMcpApprovalRequestSchema,
+  responsesMcpApprovalResponseSchema,
 ])
 
-export const responsesAgentResponseSchema = z.object({
+export const responsesResponseSchema = z.object({
   id: z.string().optional(),
   created_at: z.number().optional(),
   error: z
@@ -88,7 +88,7 @@ export const responsesAgentResponseSchema = z.object({
     })
     .nullish(),
   model: z.string().optional(),
-  output: z.array(responsesAgentOutputItem),
+  output: z.array(responsesOutputItem),
   incomplete_details: z
     .object({
       reason: z.string().nullish().optional(),
@@ -130,7 +130,7 @@ export const simpleErrorChunkSchema = z.object({
 const responseOutputItemDoneSchema = z.object({
   type: z.literal('response.output_item.done'),
   output_index: z.number(),
-  item: responsesAgentOutputItem,
+  item: responsesOutputItem,
 })
 
 const responseAnnotationAddedSchema = z.object({
@@ -185,7 +185,7 @@ const responsesCompletedSchema = z.object({
   }),
 })
 
-export const responsesAgentChunkSchema = z.union([
+export const responsesChunkSchema = z.union([
   textDeltaChunkSchema,
   responseOutputItemDoneSchema,
   responseAnnotationAddedSchema,
@@ -200,11 +200,11 @@ export const responsesAgentChunkSchema = z.union([
 /**
  * We use a loose schema for response validation to handle unknown chunks.
  */
-export const looseResponseAgentChunkSchema = z.union([
-  responsesAgentChunkSchema,
+export const looseResponsesChunkSchema = z.union([
+  responsesChunkSchema,
   z.object({ type: z.string() }).loose(), // fallback for unknown chunks
 ])
 
 // Exported types for type-only imports in other modules
-export type ResponsesAgentChunk = z.infer<typeof responsesAgentChunkSchema>
-export type ResponsesAgentResponse = z.infer<typeof responsesAgentResponseSchema>
+export type ResponsesChunk = z.infer<typeof responsesChunkSchema>
+export type ResponsesResponse = z.infer<typeof responsesResponseSchema>

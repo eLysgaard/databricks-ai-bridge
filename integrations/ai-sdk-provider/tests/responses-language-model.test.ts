@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import type { LanguageModelV2StreamPart } from '@ai-sdk/provider'
 import {
-  DatabricksResponsesAgentLanguageModel,
+  DatabricksResponsesLanguageModel,
   shouldDedupeOutputItemDone,
-} from '../src/responses-agent-language-model/responses-agent-language-model'
+} from '../src/responses-language-model/responses-language-model'
 import { RESPONSES_AGENT_OUTPUT_WITH_TOOL_CALLS } from './__fixtures__/llm-output-fixtures'
 import {
   MCP_APPROVAL_REQUEST_FIXTURE,
@@ -103,13 +103,13 @@ function createMockFetch(sseContent: string): typeof fetch {
   }
 }
 
-describe('DatabricksResponsesAgentLanguageModel', () => {
+describe('DatabricksResponsesLanguageModel', () => {
   it('correctly converts RESPONSES_AGENT_OUTPUT_WITH_TOOL_CALLS fixture', async () => {
     // Create a mock fetch that returns the fixture SSE stream
     const mockFetch = createMockFetch(RESPONSES_AGENT_OUTPUT_WITH_TOOL_CALLS.in)
 
     // Instantiate the model with mock config
-    const model = new DatabricksResponsesAgentLanguageModel('test-model', {
+    const model = new DatabricksResponsesLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -161,7 +161,7 @@ describe('MCP Approval Streaming', () => {
   it('correctly converts MCP approval request stream', async () => {
     const mockFetch = createMockFetch(MCP_APPROVAL_REQUEST_FIXTURE.in)
 
-    const model = new DatabricksResponsesAgentLanguageModel('test-model', {
+    const model = new DatabricksResponsesLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -213,7 +213,7 @@ describe('MCP Approval Streaming', () => {
   it('correctly converts MCP approval response (approved) stream', async () => {
     const mockFetch = createMockFetch(MCP_APPROVAL_RESPONSE_APPROVED_FIXTURE.in)
 
-    const model = new DatabricksResponsesAgentLanguageModel('test-model', {
+    const model = new DatabricksResponsesLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -276,7 +276,7 @@ describe('MCP Approval Streaming', () => {
   it('correctly converts MCP approval response (denied) stream', async () => {
     const mockFetch = createMockFetch(MCP_APPROVAL_RESPONSE_DENIED_FIXTURE.in)
 
-    const model = new DatabricksResponsesAgentLanguageModel('test-model', {
+    const model = new DatabricksResponsesLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -362,7 +362,7 @@ data: {
     `
 
     const mockFetch = createMockFetch(sseContent)
-    const model = new DatabricksResponsesAgentLanguageModel('test-model', {
+    const model = new DatabricksResponsesLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -407,7 +407,7 @@ data: {
     `
 
     const mockFetch = createMockFetch(sseContent)
-    const model = new DatabricksResponsesAgentLanguageModel('test-model', {
+    const model = new DatabricksResponsesLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -466,7 +466,7 @@ data: {
     `
 
     const mockFetch = createMockFetch(sseContent)
-    const model = new DatabricksResponsesAgentLanguageModel('test-model', {
+    const model = new DatabricksResponsesLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',
@@ -518,7 +518,7 @@ data: {
     `
 
     const mockFetch = createMockFetch(sseContent)
-    const model = new DatabricksResponsesAgentLanguageModel('test-model', {
+    const model = new DatabricksResponsesLanguageModel('test-model', {
       provider: 'databricks',
       headers: () => ({ Authorization: 'Bearer test-token' }),
       url: () => 'http://test.example.com/api',

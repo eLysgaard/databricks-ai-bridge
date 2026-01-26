@@ -1,6 +1,6 @@
 import type { LanguageModelV2Content, LanguageModelV2StreamPart } from '@ai-sdk/provider'
 import { randomUUID } from 'node:crypto'
-import { type ResponsesAgentChunk, type ResponsesAgentResponse } from './responses-agent-schema'
+import { type ResponsesChunk, type ResponsesResponse } from './responses-schema'
 import { DATABRICKS_TOOL_CALL_ID } from '../tools'
 import {
   MCP_APPROVAL_REQUEST_TYPE,
@@ -8,8 +8,8 @@ import {
   createApprovalStatusOutput,
 } from '../mcp'
 
-export const convertResponsesAgentChunkToMessagePart = (
-  chunk: ResponsesAgentChunk
+export const convertResponsesChunkToMessagePart = (
+  chunk: ResponsesChunk
 ): LanguageModelV2StreamPart[] => {
   const parts: LanguageModelV2StreamPart[] = []
 
@@ -88,7 +88,7 @@ export const convertResponsesAgentChunkToMessagePart = (
 }
 
 type OutputItemDoneItem = Extract<
-  ResponsesAgentChunk,
+  ResponsesChunk,
   { type: 'response.output_item.done' }
 >['item']
 
@@ -203,8 +203,8 @@ const convertOutputItemDone = (item: OutputItemDoneItem): LanguageModelV2StreamP
   }
 }
 
-export const convertResponsesAgentResponseToMessagePart = (
-  response: ResponsesAgentResponse
+export const convertResponsesResponseToMessagePart = (
+  response: ResponsesResponse
 ): LanguageModelV2Content[] => {
   const parts: LanguageModelV2Content[] = []
 

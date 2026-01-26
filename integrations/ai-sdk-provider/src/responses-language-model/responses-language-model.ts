@@ -16,13 +16,13 @@ import {
 import { z } from 'zod/v4'
 import type { DatabricksLanguageModelConfig } from '../databricks-provider'
 import {
-  responsesAgentResponseSchema,
-  looseResponseAgentChunkSchema,
-  type responsesAgentChunkSchema,
-} from './responses-agent-schema'
+  responsesResponseSchema,
+  looseResponsesChunkSchema,
+  type responsesChunkSchema,
+} from './responses-schema'
 import {
-  convertResponsesAgentChunkToMessagePart,
-  convertResponsesAgentResponseToMessagePart,
+  convertResponsesChunkToMessagePart,
+  convertResponsesResponseToMessagePart,
 } from './responses-convert-to-message-parts'
 import { convertToResponsesInput } from './responses-convert-to-input'
 import { getDatabricksLanguageModelTransformStream } from '../stream-transformers/databricks-stream-transformer'
@@ -49,7 +49,7 @@ function mapResponsesFinishReason({
   }
 }
 
-export class DatabricksResponsesAgentLanguageModel implements LanguageModelV2 {
+export class DatabricksResponsesLanguageModel implements LanguageModelV2 {
   readonly specificationVersion = 'v2'
 
   readonly modelId: string
@@ -79,7 +79,7 @@ export class DatabricksResponsesAgentLanguageModel implements LanguageModelV2 {
 
     const { value: response } = await postJsonToApi({
       ...networkArgs,
-      successfulResponseHandler: createJsonResponseHandler(responsesAgentResponseSchema),
+      successfulResponseHandler: createJsonResponseHandler(responsesResponseSchema),
       failedResponseHandler: createJsonErrorResponseHandler({
         errorSchema: z.any(),
         errorToMessage: (error) => JSON.stringify(error),
@@ -87,7 +87,7 @@ export class DatabricksResponsesAgentLanguageModel implements LanguageModelV2 {
       }),
     })
 
-    const content = convertResponsesAgentResponseToMessagePart(response)
+    const content = convertResponsesResponseToMessagePart(response)
     const hasToolCalls = content.some((p) => p.type === 'tool-call')
 
     return {
@@ -122,7 +122,7 @@ export class DatabricksResponsesAgentLanguageModel implements LanguageModelV2 {
         errorToMessage: (error) => JSON.stringify(error),
         isRetryable: () => false,
       }),
-      successfulResponseHandler: createEventSourceResponseHandler(looseResponseAgentChunkSchema),
+      successfulResponseHandler: createEventSourceResponseHandler(looseResponsesChunkSchema),
       abortSignal: options.abortSignal,
     })
 
@@ -139,7 +139,7 @@ export class DatabricksResponsesAgentLanguageModel implements LanguageModelV2 {
       stream: response
         .pipeThrough(
           new TransformStream<
-            ParseResult<z.infer<typeof responsesAgentChunkSchema>>,
+            ParseResult<z.infer<typeof responsesChunkSchema>>,
             LanguageModelV2StreamPart
           >({
             start(controller) {
@@ -170,7 +170,7 @@ export class DatabricksResponsesAgentLanguageModel implements LanguageModelV2 {
                 return
               }
 
-              const parts = convertResponsesAgentChunkToMessagePart(chunk.value)
+              const parts = convertResponsesChunkToMessagePart(chunk.value)
 
               allParts.push(...parts)
               /**

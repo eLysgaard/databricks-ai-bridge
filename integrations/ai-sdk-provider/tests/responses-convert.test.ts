@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import type { LanguageModelV2Prompt } from '@ai-sdk/provider'
-import { convertToResponsesInput } from '../src/responses-agent-language-model/responses-convert-to-input'
+import { convertToResponsesInput } from '../src/responses-language-model/responses-convert-to-input'
 import {
-  convertResponsesAgentChunkToMessagePart,
-  convertResponsesAgentResponseToMessagePart,
-} from '../src/responses-agent-language-model/responses-convert-to-message-parts'
+  convertResponsesChunkToMessagePart,
+  convertResponsesResponseToMessagePart,
+} from '../src/responses-language-model/responses-convert-to-message-parts'
 import { DATABRICKS_TOOL_CALL_ID } from '../src/tools'
 import { MCP_APPROVAL_REQUEST_TYPE, MCP_APPROVAL_RESPONSE_TYPE } from '../src/mcp'
 
@@ -866,10 +866,10 @@ describe('convertToResponsesInput', () => {
 })
 
 // ============================================================================
-// Tests for convertResponsesAgentChunkToMessagePart
+// Tests for convertResponsesChunkToMessagePart
 // ============================================================================
 
-describe('convertResponsesAgentChunkToMessagePart', () => {
+describe('convertResponsesChunkToMessagePart', () => {
   describe('response.output_text.delta events', () => {
     it('converts text delta to text-delta part', () => {
       const chunk = {
@@ -878,7 +878,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
         delta: 'Hello, world!',
       }
 
-      const parts = convertResponsesAgentChunkToMessagePart(chunk)
+      const parts = convertResponsesChunkToMessagePart(chunk)
 
       expect(parts).toEqual([
         {
@@ -899,7 +899,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
         delta: '',
       }
 
-      const parts = convertResponsesAgentChunkToMessagePart(chunk)
+      const parts = convertResponsesChunkToMessagePart(chunk)
 
       expect(parts).toEqual([
         {
@@ -923,7 +923,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
         delta: 'Thinking about this...',
       }
 
-      const parts = convertResponsesAgentChunkToMessagePart(chunk)
+      const parts = convertResponsesChunkToMessagePart(chunk)
 
       expect(parts).toEqual([
         {
@@ -946,7 +946,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
         output: '{"result": 42}',
       }
 
-      const parts = convertResponsesAgentChunkToMessagePart(chunk)
+      const parts = convertResponsesChunkToMessagePart(chunk)
 
       expect(parts).toEqual([
         {
@@ -980,7 +980,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
           },
         }
 
-        const parts = convertResponsesAgentChunkToMessagePart(chunk)
+        const parts = convertResponsesChunkToMessagePart(chunk)
 
         expect(parts).toEqual([
           {
@@ -1012,7 +1012,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
           },
         }
 
-        const parts = convertResponsesAgentChunkToMessagePart(chunk)
+        const parts = convertResponsesChunkToMessagePart(chunk)
 
         expect(parts).toEqual([
           {
@@ -1043,7 +1043,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
           },
         }
 
-        const parts = convertResponsesAgentChunkToMessagePart(chunk)
+        const parts = convertResponsesChunkToMessagePart(chunk)
 
         expect(parts).toEqual([
           {
@@ -1073,7 +1073,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
           },
         }
 
-        const parts = convertResponsesAgentChunkToMessagePart(chunk)
+        const parts = convertResponsesChunkToMessagePart(chunk)
 
         expect(parts).toEqual([
           { type: 'reasoning-start', id: 'reasoning_123' },
@@ -1104,7 +1104,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
           },
         }
 
-        const parts = convertResponsesAgentChunkToMessagePart(chunk)
+        const parts = convertResponsesChunkToMessagePart(chunk)
 
         expect(parts).toEqual([
           {
@@ -1139,7 +1139,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
           },
         }
 
-        const parts = convertResponsesAgentChunkToMessagePart(chunk)
+        const parts = convertResponsesChunkToMessagePart(chunk)
 
         expect(parts).toEqual([
           {
@@ -1170,7 +1170,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
           },
         }
 
-        const parts = convertResponsesAgentChunkToMessagePart(chunk)
+        const parts = convertResponsesChunkToMessagePart(chunk)
 
         expect(parts).toEqual([
           {
@@ -1200,7 +1200,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
           },
         }
 
-        const parts = convertResponsesAgentChunkToMessagePart(chunk)
+        const parts = convertResponsesChunkToMessagePart(chunk)
 
         expect(parts).toEqual([
           {
@@ -1230,7 +1230,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
         },
       }
 
-      const parts = convertResponsesAgentChunkToMessagePart(chunk)
+      const parts = convertResponsesChunkToMessagePart(chunk)
 
       expect(parts).toHaveLength(1)
       expect(parts[0]).toMatchObject({
@@ -1255,7 +1255,7 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
         sequence_number: 5,
       }
 
-      const parts = convertResponsesAgentChunkToMessagePart(chunk)
+      const parts = convertResponsesChunkToMessagePart(chunk)
 
       expect(parts).toEqual([
         {
@@ -1270,10 +1270,10 @@ describe('convertResponsesAgentChunkToMessagePart', () => {
 
 
 // ============================================================================
-// Tests for convertResponsesAgentResponseToMessagePart
+// Tests for convertResponsesResponseToMessagePart
 // ============================================================================
 
-describe('convertResponsesAgentResponseToMessagePart', () => {
+describe('convertResponsesResponseToMessagePart', () => {
   describe('message output', () => {
     it('converts message with text content', () => {
       const response = {
@@ -1295,7 +1295,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([
         {
@@ -1334,7 +1334,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([
         {
@@ -1370,7 +1370,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([
         {
@@ -1404,7 +1404,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([
         {
@@ -1438,7 +1438,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([
         {
@@ -1472,7 +1472,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([
         {
@@ -1500,7 +1500,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([
         {
@@ -1536,7 +1536,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([
         {
@@ -1568,7 +1568,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([
         {
@@ -1599,7 +1599,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([
         {
@@ -1645,7 +1645,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         ],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toHaveLength(2)
       expect(parts[0]).toEqual({
@@ -1674,7 +1674,7 @@ describe('convertResponsesAgentResponseToMessagePart', () => {
         output: [],
       }
 
-      const parts = convertResponsesAgentResponseToMessagePart(response)
+      const parts = convertResponsesResponseToMessagePart(response)
 
       expect(parts).toEqual([])
     })

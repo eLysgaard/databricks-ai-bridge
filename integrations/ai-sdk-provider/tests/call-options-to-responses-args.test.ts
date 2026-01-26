@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { LanguageModelV2CallOptions, LanguageModelV2Prompt } from '@ai-sdk/provider'
-import { callOptionsToResponsesArgs } from '../src/responses-agent-language-model/call-options-to-responses-args'
+import { callOptionsToResponsesArgs } from '../src/responses-language-model/call-options-to-responses-args'
 
 const defaultPrompt: LanguageModelV2Prompt = [{ role: 'user', content: [{ type: 'text', text: 'test' }] }]
 const createOptions = (overrides: Partial<LanguageModelV2CallOptions> = {}): LanguageModelV2CallOptions => ({
