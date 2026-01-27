@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-01-27
+
+### Changed
+
+- Renamed internal `fmapi-language-model` module to `chat-completions-language-model` for clarity
+- Renamed internal `responses-agent-language-model` module to `responses-language-model` for clarity
+
 ## [0.2.3] - 2026-01-26
 
 ### Added
@@ -14,11 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `callOptionsToResponsesArgs` for converting AI SDK call options to Responses API parameters (temperature, topP, maxOutputTokens, responseFormat, provider-specific options)
 - Added `callOptionsToChatCompletionsArgs` for converting AI SDK call options to Chat Completions API parameters (temperature, topP, topK, maxOutputTokens, stopSequences, responseFormat, provider-specific options)
 - Both language models now return warnings for unsupported options (presencePenalty, frequencyPenalty, seed)
-
-### Changed
-
-- Renamed internal `fmapi-language-model` module to `chat-completions-language-model` for clarity
-- Renamed internal `responses-agent-language-model` module to `responses-language-model` for clarity
 
 ## [0.2.2] - 2026-01-26
 
